@@ -100,6 +100,8 @@ jQuery(document).ready(function($) {
             } else {
                 $previewText.hide();
             }
+        });
+    }
     
     // Validate before add to cart
     $('form.cart').on('submit', function(e) {
