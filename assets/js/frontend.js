@@ -11,6 +11,87 @@ jQuery(document).ready(function($) {
         return;
     }
     
+    // Create preview overlay on product image
+    function createPreviewOverlay() {
+        // Check if preview fields data exists
+        if (typeof garoPreviewFields === 'undefined' || !garoPreviewFields.length) {
+            return;
+        }
+        
+        // Wait for gallery to be available
+        var $gallery = $('.woocommerce-product-gallery');
+        if (!$gallery.length) {
+            // Try alternative selectors
+            $gallery = $('.product .images, .single-product .images, div.images');
+        }
+        
+        if (!$gallery.length) {
+            console.log('Garo: Product gallery not found');
+            return;
+        }
+        
+        // Check if overlay already exists
+        if ($('#garo-image-preview-overlay').length) {
+            return;
+        }
+        
+        // Make gallery relative positioned
+        $gallery.css('position', 'relative');
+        
+        // Create overlay container
+        var $overlay = $('<div id="garo-image-preview-overlay"></div>');
+        $overlay.css({
+            'position': 'absolute',
+            'top': '0',
+            'left': '0',
+            'width': '100%',
+            'height': '100%',
+            'pointer-events': 'none',
+            'z-index': '100'
+        });
+        
+        // Create preview text elements
+        $.each(garoPreviewFields, function(i, field) {
+            var $previewText = $('<div></div>');
+            $previewText.attr({
+                'class': 'garo-preview-text',
+                'id': 'garo_preview_' + field.index,
+                'data-field-index': field.index
+            });
+            $previewText.css({
+                'position': 'absolute',
+                'left': field.position_x + 'px',
+                'top': field.position_y + 'px',
+                'font-family': field.default_font,
+                'font-size': '24px',
+                'color': '#333',
+                'font-weight': 'bold',
+                'text-shadow': '0 0 2px rgba(255,255,255,0.8)',
+                'pointer-events': 'none',
+                'white-space': 'nowrap',
+                'display': 'none'
+            });
+            $overlay.append($previewText);
+        });
+        
+        // Append overlay to gallery
+        $gallery.append($overlay);
+        
+        console.log('Garo: Preview overlay created successfully');
+    }
+    
+    // Initialize preview overlay
+    setTimeout(function() {
+        createPreviewOverlay();
+    }, 100);
+    
+    // Try again after a delay in case gallery loads late
+    setTimeout(function() {
+        if (!$('#garo-image-preview-overlay').length) {
+            createPreviewOverlay();
+        }
+    }, 1000);
+    
     // Handle font selection changes
     $('.garo-font-dropdown').on('change', function() {
         var fieldIndex = $(this).data('field-index');
