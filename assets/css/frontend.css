@@ -1,0 +1,132 @@
+/* Frontend CSS for Garo Text Preview Plugin */
+
+.garo-customization-container {
+    margin: 20px 0;
+}
+
+.garo-field-group {
+    margin-bottom: 15px;
+}
+
+.garo-field-group label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 5px;
+    color: #333;
+    font-size: 14px;
+}
+
+.garo-field-group .required {
+    color: #dc3232;
+    font-weight: bold;
+}
+
+.garo-field-group .garo-additional-price {
+    color: #666;
+    font-weight: normal;
+    font-size: 13px;
+    margin-left: 5px;
+}
+
+.garo-custom-field {
+    width: 100%;
+    max-width: 400px;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    font-size: 15px;
+    box-sizing: border-box;
+    margin-bottom: 5px;
+}
+
+.garo-custom-field:focus {
+    outline: none;
+    border-color: #0073aa;
+    box-shadow: 0 0 2px rgba(0, 115, 170, 0.3);
+}
+
+.garo-custom-field.error {
+    border-color: #dc3232;
+}
+
+.garo-font-dropdown {
+    padding: 6px 10px;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    font-size: 14px;
+    min-width: 180px;
+    background-color: #fff;
+    margin-bottom: 5px;
+}
+
+.garo-font-dropdown:focus {
+    outline: none;
+    border-color: #0073aa;
+    box-shadow: 0 0 2px rgba(0, 115, 170, 0.3);
+}
+
+.garo-field-hint {
+    display: block;
+    margin-top: 3px;
+    color: #666;
+    font-size: 12px;
+}
+
+.garo-image-upload {
+    display: block;
+    margin-top: 5px;
+    padding: 6px;
+}
+
+/* Image preview overlay */
+#garo-image-preview-overlay {
+    position: relative;
+    pointer-events: none;
+}
+
+.garo-preview-text {
+    position: absolute;
+    z-index: 10;
+}
+
+/* Product images wrapper */
+.woocommerce-product-gallery {
+    position: relative;
+}
+
+/* Error messages */
+.garo-error-message {
+    color: #dc3232;
+    font-size: 12px;
+    margin-top: 3px;
+    display: none;
+}
+
+.garo-error-message.show {
+    display: block;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .garo-custom-field {
+        max-width: 100%;
+    }
+    
+    .garo-font-dropdown {
+        width: 100%;
+        max-width: 100%;
+    }
+}
+
+/* Loading state */
+.garo-loading {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+/* Success message */
+.garo-success-message {
+    color: #46b450;
+    font-size: 12px;
+    margin-top: 3px;
+}

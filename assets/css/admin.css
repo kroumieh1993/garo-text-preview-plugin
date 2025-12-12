@@ -1,0 +1,146 @@
+/* Admin CSS for Garo Text Preview Plugin */
+
+.garo-product-fields-container {
+    margin: 20px 0;
+}
+
+.garo-product-fields-container h3 {
+    margin-top: 20px;
+    margin-bottom: 10px;
+    font-size: 16px;
+}
+
+#garo-product-customization {
+    padding: 15px;
+    background: #f9f9f9;
+    border: 1px solid #ddd;
+    margin-top: 15px;
+}
+
+.garo-custom-field-row {
+    background: #fff;
+    border: 1px solid #ddd;
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 4px;
+}
+
+.garo-field-row {
+    margin-bottom: 15px;
+}
+
+.garo-field-row:last-child {
+    margin-bottom: 0;
+}
+
+.garo-field-inline {
+    display: inline-block;
+    margin-right: 20px;
+    vertical-align: top;
+}
+
+.garo-custom-field-row label {
+    font-weight: 600;
+    display: block;
+    margin-bottom: 5px;
+}
+
+.garo-custom-field-row input[type="text"],
+.garo-custom-field-row input[type="number"] {
+    padding: 5px 10px;
+}
+
+.garo-custom-field-row .description {
+    color: #666;
+    font-style: italic;
+    font-size: 13px;
+}
+
+.garo-remove-custom-field {
+    margin-top: 10px;
+    color: #a00;
+}
+
+.garo-remove-custom-field:hover {
+    color: #dc3232;
+}
+
+/* Font management */
+.garo-font-row {
+    margin-bottom: 10px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    background: #fff;
+    border-radius: 4px;
+}
+
+.garo-font-row input[type="text"] {
+    padding: 5px 10px;
+}
+
+.garo-remove-font {
+    color: #a00;
+}
+
+.garo-remove-font:hover {
+    color: #dc3232;
+}
+
+/* Global fields */
+.garo-global-field-row {
+    margin-bottom: 15px;
+    padding: 15px;
+    border: 1px solid #ddd;
+    background: #fff;
+    border-radius: 4px;
+}
+
+.garo-global-field-row label {
+    font-weight: 600;
+    display: block;
+    margin-bottom: 5px;
+}
+
+.garo-global-field-row input[type="text"],
+.garo-global-field-row select {
+    padding: 5px 10px;
+}
+
+.garo-remove-global-field {
+    color: #a00;
+    margin-top: 10px;
+}
+
+.garo-remove-global-field:hover {
+    color: #dc3232;
+}
+
+.garo-categories-field {
+    margin-top: 10px;
+}
+
+/* Settings page */
+.form-table th {
+    width: 200px;
+}
+
+#garo-fonts-container,
+#garo-global-fields-container,
+#garo-custom-fields-container {
+    margin-bottom: 15px;
+}
+
+#garo-add-font,
+#garo-add-global-field,
+#garo-add-custom-field {
+    margin-top: 10px;
+}
+
+/* Order admin customizations */
+.garo-customizations {
+    min-width: 200px;
+}
+
+.garo-customizations div {
+    margin-bottom: 5px;
+}
