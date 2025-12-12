@@ -1,0 +1,1 @@
+# garo-text-preview-plugin
