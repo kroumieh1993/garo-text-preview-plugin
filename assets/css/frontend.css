@@ -2,34 +2,18 @@
 
 .garo-customization-container {
     margin: 20px 0;
-    padding: 20px;
-    background: #f9f9f9;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-}
-
-.garo-customization-container h3 {
-    margin-top: 0;
-    margin-bottom: 20px;
-    font-size: 18px;
-    color: #333;
 }
 
 .garo-field-group {
-    margin-bottom: 25px;
-    padding-bottom: 20px;
-    border-bottom: 1px solid #e0e0e0;
-}
-
-.garo-field-group:last-of-type {
-    border-bottom: none;
+    margin-bottom: 15px;
 }
 
 .garo-field-group label {
     display: block;
     font-weight: 600;
-    margin-bottom: 8px;
+    margin-bottom: 5px;
     color: #333;
+    font-size: 14px;
 }
 
 .garo-field-group .required {
@@ -40,99 +24,81 @@
 .garo-field-group .garo-additional-price {
     color: #666;
     font-weight: normal;
-    font-size: 14px;
+    font-size: 13px;
     margin-left: 5px;
 }
 
 .garo-custom-field {
     width: 100%;
-    max-width: 500px;
-    padding: 10px;
+    max-width: 400px;
+    padding: 8px 12px;
     border: 1px solid #ddd;
-    border-radius: 4px;
-    font-size: 16px;
+    border-radius: 3px;
+    font-size: 15px;
     box-sizing: border-box;
-    margin-bottom: 10px;
+    margin-bottom: 5px;
 }
 
 .garo-custom-field:focus {
     outline: none;
     border-color: #0073aa;
-    box-shadow: 0 0 3px rgba(0, 115, 170, 0.3);
+    box-shadow: 0 0 2px rgba(0, 115, 170, 0.3);
 }
 
 .garo-custom-field.error {
     border-color: #dc3232;
 }
 
-.garo-font-selector {
-    margin-top: 8px;
-    margin-bottom: 8px;
-}
-
-.garo-font-selector label {
-    display: inline-block;
-    font-weight: normal;
-    font-size: 14px;
-    margin-right: 10px;
-    margin-bottom: 0;
-}
-
 .garo-font-dropdown {
     padding: 6px 10px;
     border: 1px solid #ddd;
-    border-radius: 4px;
+    border-radius: 3px;
     font-size: 14px;
-    min-width: 200px;
+    min-width: 180px;
     background-color: #fff;
+    margin-bottom: 5px;
 }
 
 .garo-font-dropdown:focus {
     outline: none;
     border-color: #0073aa;
-    box-shadow: 0 0 3px rgba(0, 115, 170, 0.3);
+    box-shadow: 0 0 2px rgba(0, 115, 170, 0.3);
 }
 
 .garo-field-hint {
     display: block;
-    margin-top: 5px;
+    margin-top: 3px;
     color: #666;
-    font-size: 13px;
+    font-size: 12px;
 }
 
 .garo-image-upload {
     display: block;
     margin-top: 5px;
-    padding: 8px;
+    padding: 6px;
 }
 
-.garo-preview-container {
-    margin-top: 30px;
-    padding: 20px;
-    background: #fff;
-    border: 1px solid #ddd;
-    border-radius: 4px;
+/* Image preview overlay */
+#garo-image-preview-overlay {
+    position: relative;
+    pointer-events: none;
 }
 
-.garo-preview-container h4 {
-    margin-top: 0;
-    margin-bottom: 15px;
-    font-size: 16px;
+.garo-preview-text {
+    position: absolute;
+    z-index: 10;
 }
 
-#garo-text-preview {
-    min-height: 100px;
-    padding: 15px;
-    background: #fafafa;
-    border: 1px dashed #ddd;
-    text-align: center;
+/* Product images wrapper */
+.woocommerce-product-gallery {
+    position: relative;
 }
 
 /* Error messages */
 .garo-error-message {
     color: #dc3232;
-    font-size: 13px;
-    margin-top: 5px;
+    font-size: 12px;
+    margin-top: 3px;
     display: none;
 }
 
@@ -142,10 +108,6 @@
 
 /* Responsive */
 @media (max-width: 768px) {
-    .garo-customization-container {
-        padding: 15px;
-    }
-    
     .garo-custom-field {
         max-width: 100%;
     }
@@ -153,11 +115,6 @@
     .garo-font-dropdown {
         width: 100%;
         max-width: 100%;
-    }
-    
-    .garo-font-selector label {
-        display: block;
-        margin-bottom: 5px;
     }
 }
 
@@ -170,6 +127,6 @@
 /* Success message */
 .garo-success-message {
     color: #46b450;
-    font-size: 13px;
-    margin-top: 5px;
+    font-size: 12px;
+    margin-top: 3px;
 }

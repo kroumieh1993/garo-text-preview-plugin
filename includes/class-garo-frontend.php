@@ -22,6 +22,9 @@ class Garo_Frontend {
         // Display customization fields on product page
         add_action('woocommerce_before_add_to_cart_button', array($this, 'display_customization_fields'));
         
+        // Display preview on product images
+        add_action('woocommerce_product_thumbnails', array($this, 'display_image_preview'), 5);
+        
         // Validate fields before add to cart
         add_filter('woocommerce_add_to_cart_validation', array($this, 'validate_customization_fields'), 10, 3);
         
@@ -84,7 +87,6 @@ class Garo_Frontend {
         $default_font_global = get_option('garo_text_preview_default_font', '');
         ?>
         <div class="garo-customization-container">
-            <h3><?php echo esc_html__('Customize Your Product', 'garo-text-preview'); ?></h3>
             
             <?php if (!empty($all_fields)): ?>
                 <?php foreach ($all_fields as $index => $field): ?>
@@ -121,7 +123,8 @@ class Garo_Frontend {
                                 data-required="<?php echo $required ? '1' : '0'; ?>"
                                 data-price="<?php echo esc_attr($additional_price); ?>"
                                 data-field-index="<?php echo esc_attr($index); ?>"
-                                rows="4"
+                                <?php if ($max_chars > 0): ?>maxlength="<?php echo esc_attr($max_chars); ?>"<?php endif; ?>
+                                rows="2"
                             ></textarea>
                         <?php else: ?>
                             <input 
@@ -135,30 +138,27 @@ class Garo_Frontend {
                                 data-required="<?php echo $required ? '1' : '0'; ?>"
                                 data-price="<?php echo esc_attr($additional_price); ?>"
                                 data-field-index="<?php echo esc_attr($index); ?>"
+                                <?php if ($max_chars > 0): ?>maxlength="<?php echo esc_attr($max_chars); ?>"<?php endif; ?>
                             >
                         <?php endif; ?>
                         
-                        <!-- Font selector for this field -->
-                        <div class="garo-font-selector">
-                            <label for="garo_font_<?php echo esc_attr($index); ?>"><?php echo esc_html__('Select Font:', 'garo-text-preview'); ?></label>
-                            <select 
-                                name="garo_custom_font[<?php echo esc_attr($index); ?>]" 
-                                id="garo_font_<?php echo esc_attr($index); ?>" 
-                                class="garo-font-dropdown"
-                                data-field-index="<?php echo esc_attr($index); ?>"
-                            >
-                                <?php
-                                if (!empty($fonts)) {
-                                    foreach ($fonts as $font) {
-                                        if (!empty($font['name'])) {
-                                            $selected = ($default_font === $font['name']) ? 'selected' : '';
-                                            echo '<option value="' . esc_attr($font['name']) . '" ' . $selected . '>' . esc_html($font['name']) . '</option>';
-                                        }
+                        <select 
+                            name="garo_custom_font[<?php echo esc_attr($index); ?>]" 
+                            id="garo_font_<?php echo esc_attr($index); ?>" 
+                            class="garo-font-dropdown"
+                            data-field-index="<?php echo esc_attr($index); ?>"
+                        >
+                            <?php
+                            if (!empty($fonts)) {
+                                foreach ($fonts as $font) {
+                                    if (!empty($font['name'])) {
+                                        $selected = ($default_font === $font['name']) ? 'selected' : '';
+                                        echo '<option value="' . esc_attr($font['name']) . '" ' . $selected . '>' . esc_html($font['name']) . '</option>';
                                     }
                                 }
-                                ?>
-                            </select>
-                        </div>
+                            }
+                            ?>
+                        </select>
                         
                         <?php if ($min_chars > 0 || $max_chars > 0): ?>
                             <small class="garo-field-hint">
@@ -189,11 +189,49 @@ class Garo_Frontend {
                     <small class="garo-field-hint"><?php echo esc_html__('Upload a custom image if needed', 'garo-text-preview'); ?></small>
                 </div>
             <?php endif; ?>
-            
-            <div class="garo-preview-container" style="display: none;">
-                <h4><?php echo esc_html__('Preview', 'garo-text-preview'); ?></h4>
-                <div id="garo-text-preview"></div>
-            </div>
+        </div>
+        <?php
+    }
+    
+    /**
+     * Display image preview overlay on product images
+     */
+    public function display_image_preview() {
+        global $product;
+        
+        if (!$product) {
+            return;
+        }
+        
+        $product_id = $product->get_id();
+        $enabled = get_post_meta($product_id, '_garo_text_preview_enabled', true);
+        
+        if ($enabled !== '1') {
+            return;
+        }
+        
+        $custom_fields = get_post_meta($product_id, '_garo_custom_fields', true);
+        $global_fields = $this->get_applicable_global_fields($product_id);
+        $all_fields = array_merge((array)$custom_fields, (array)$global_fields);
+        
+        if (empty($all_fields)) {
+            return;
+        }
+        ?>
+        <div id="garo-image-preview-overlay" style="display: none;">
+            <?php foreach ($all_fields as $index => $field): ?>
+                <?php
+                $position_x = isset($field['position_x']) ? intval($field['position_x']) : 0;
+                $position_y = isset($field['position_y']) ? intval($field['position_y']) : 0;
+                $default_font = isset($field['default_font']) ? $field['default_font'] : '';
+                ?>
+                <div 
+                    class="garo-preview-text" 
+                    id="garo_preview_<?php echo esc_attr($index); ?>"
+                    data-field-index="<?php echo esc_attr($index); ?>"
+                    style="position: absolute; left: <?php echo esc_attr($position_x); ?>px; top: <?php echo esc_attr($position_y); ?>px; font-family: <?php echo esc_attr($default_font); ?>; font-size: 24px; color: #333; font-weight: bold; text-shadow: 0 0 2px rgba(255,255,255,0.8); pointer-events: none; white-space: nowrap;"
+                ></div>
+            <?php endforeach; ?>
         </div>
         <?php
     }

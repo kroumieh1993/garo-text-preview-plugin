@@ -11,15 +11,50 @@ jQuery(document).ready(function($) {
         return;
     }
     
+    // Position preview overlay on product image
+    function positionPreviewOverlay() {
+        var $productImage = $('.woocommerce-product-gallery__image img').first();
+        var $previewOverlay = $('#garo-image-preview-overlay');
+        
+        if ($productImage.length && $previewOverlay.length) {
+            var imgOffset = $productImage.offset();
+            var imgWidth = $productImage.width();
+            var imgHeight = $productImage.height();
+            
+            $previewOverlay.css({
+                'position': 'absolute',
+                'left': imgOffset.left + 'px',
+                'top': imgOffset.top + 'px',
+                'width': imgWidth + 'px',
+                'height': imgHeight + 'px',
+                'pointer-events': 'none',
+                'z-index': '100'
+            });
+            
+            $previewOverlay.show();
+        }
+    }
+    
+    // Initialize preview overlay position
+    setTimeout(function() {
+        positionPreviewOverlay();
+    }, 500);
+    
+    $(window).on('resize', function() {
+        positionPreviewOverlay();
+    });
+    
     // Handle font selection changes
     $('.garo-font-dropdown').on('change', function() {
         var fieldIndex = $(this).data('field-index');
         var selectedFont = $(this).val();
         var $textField = $('#garo_field_' + fieldIndex);
+        var $previewText = $('#garo_preview_' + fieldIndex);
         
         // Apply font to the text field
         if (selectedFont) {
             $textField.css('font-family', selectedFont);
+            $previewText.css('font-family', selectedFont);
         }
         
         updatePreview();
@@ -30,13 +65,15 @@ jQuery(document).ready(function($) {
         var fieldIndex = $(this).data('field-index');
         var selectedFont = $(this).val();
         var $textField = $('#garo_field_' + fieldIndex);
+        var $previewText = $('#garo_preview_' + fieldIndex);
         
         if (selectedFont) {
             $textField.css('font-family', selectedFont);
+            $previewText.css('font-family', selectedFont);
         }
     });
     
-    // Real-time character count validation
+    // Real-time character count validation and preview update
     $('.garo-custom-field').on('input', function() {
         validateField($(this));
         updatePreview();
@@ -67,11 +104,7 @@ jQuery(document).ready(function($) {
             errorMsg = 'Minimum ' + min + ' characters required.';
         }
         
-        // Check max length
-        if (max > 0 && value.length > max) {
-            isValid = false;
-            errorMsg = 'Maximum ' + max + ' characters allowed.';
-        }
+        // Note: max length is enforced by maxlength attribute
         
         if (!isValid) {
             $field.addClass('error');
@@ -81,49 +114,25 @@ jQuery(document).ready(function($) {
         return isValid;
     }
     
-    // Update preview
+    // Update preview on product image
     function updatePreview() {
-        var $preview = $('#garo-text-preview');
-        var $previewContainer = $('.garo-preview-container');
-        var hasContent = false;
-        
-        $preview.empty();
-        
         $('.garo-custom-field').each(function() {
             var $field = $(this);
             var value = $field.val();
             var fieldIndex = $field.data('field-index');
+            var $previewText = $('#garo_preview_' + fieldIndex);
             var $fontDropdown = $('#garo_font_' + fieldIndex);
             var font = $fontDropdown.val();
             
             if (value) {
-                hasContent = true;
-                var $previewText = $('<div class="garo-preview-text"></div>');
                 $previewText.text(value);
-                
                 if (font) {
                     $previewText.css('font-family', font);
                 }
-                
-                $previewText.css({
-                    'margin-bottom': '10px',
-                    'padding': '10px',
-                    'background': '#fff',
-                    'border': '1px solid #ddd',
-                    'border-radius': '4px',
-                    'font-size': '18px'
-                });
-                
-                $preview.append($previewText);
+                $previewText.show();
+            } else {
+                $previewText.hide();
             }
-        });
-        
-        if (hasContent) {
-            $previewContainer.show();
-        } else {
-            $previewContainer.hide();
-        }
-    }
     
     // Validate before add to cart
     $('form.cart').on('submit', function(e) {
@@ -174,51 +183,12 @@ jQuery(document).ready(function($) {
                     $('#garo_custom_image').after($preview);
                 }
                 
-                $preview.html('<img src="' + e.target.result + '" style="max-width: 200px; max-height: 200px; border: 1px solid #ddd; border-radius: 4px;">');
+                $preview.html('<img src="' + e.target.result + '" style="max-width: 150px; max-height: 150px; border: 1px solid #ddd; border-radius: 3px;">');
             };
             reader.readAsDataURL(file);
         }
     });
     
-    // Calculate and display total price with customizations
-    function updateTotalPrice() {
-        var additionalPrice = 0;
-        
-        $('.garo-custom-field').each(function() {
-            var value = $(this).val();
-            var price = parseFloat($(this).data('price')) || 0;
-            
-            if (value && value.length > 0 && price > 0) {
-                additionalPrice += price;
-            }
-        });
-        
-        if (additionalPrice > 0) {
-            var $priceDisplay = $('.garo-total-additional-price');
-            
-            if (!$priceDisplay.length) {
-                $priceDisplay = $('<div class="garo-total-additional-price" style="margin-top: 15px; padding: 10px; background: #fff; border: 1px solid #ddd; border-radius: 4px;"></div>');
-                $customizationContainer.append($priceDisplay);
-            }
-            
-            $priceDisplay.html('<strong>Customization Cost:</strong> ' + formatPrice(additionalPrice));
-            $priceDisplay.show();
-        } else {
-            $('.garo-total-additional-price').hide();
-        }
-    }
-    
-    function formatPrice(price) {
-        // This is a simple formatter - WordPress will handle actual formatting
-        return '$' + price.toFixed(2);
-    }
-    
-    // Update price when fields change
-    $('.garo-custom-field').on('input', function() {
-        updateTotalPrice();
-    });
-    
     // Initialize
     updatePreview();
-    updateTotalPrice();
 });
