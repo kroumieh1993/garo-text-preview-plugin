@@ -22,8 +22,8 @@ class Garo_Frontend {
         // Display customization fields on product page
         add_action('woocommerce_before_add_to_cart_button', array($this, 'display_customization_fields'));
         
-        // Display preview on product images
-        add_action('woocommerce_product_thumbnails', array($this, 'display_image_preview'), 5);
+        // Display preview on product images (after image gallery)
+        add_action('woocommerce_before_single_product_summary', array($this, 'display_image_preview'), 25);
         
         // Validate fields before add to cart
         add_filter('woocommerce_add_to_cart_validation', array($this, 'validate_customization_fields'), 10, 3);
@@ -218,21 +218,55 @@ class Garo_Frontend {
             return;
         }
         ?>
-        <div id="garo-image-preview-overlay" style="display: none;">
-            <?php foreach ($all_fields as $index => $field): ?>
-                <?php
-                $position_x = isset($field['position_x']) ? intval($field['position_x']) : 0;
-                $position_y = isset($field['position_y']) ? intval($field['position_y']) : 0;
-                $default_font = isset($field['default_font']) ? $field['default_font'] : '';
-                ?>
-                <div 
-                    class="garo-preview-text" 
-                    id="garo_preview_<?php echo esc_attr($index); ?>"
-                    data-field-index="<?php echo esc_attr($index); ?>"
-                    style="position: absolute; left: <?php echo esc_attr($position_x); ?>px; top: <?php echo esc_attr($position_y); ?>px; font-family: <?php echo esc_attr($default_font); ?>; font-size: 24px; color: #333; font-weight: bold; text-shadow: 0 0 2px rgba(255,255,255,0.8); pointer-events: none; white-space: nowrap;"
-                ></div>
-            <?php endforeach; ?>
-        </div>
+        <script type="text/javascript">
+        jQuery(document).ready(function($) {
+            // Create preview overlay container
+            var $gallery = $('.woocommerce-product-gallery');
+            if ($gallery.length && !$('#garo-image-preview-overlay').length) {
+                $gallery.css('position', 'relative');
+                var $overlay = $('<div id="garo-image-preview-overlay"></div>');
+                $overlay.css({
+                    'position': 'absolute',
+                    'top': '0',
+                    'left': '0',
+                    'width': '100%',
+                    'height': '100%',
+                    'pointer-events': 'none',
+                    'z-index': '100'
+                });
+                
+                <?php foreach ($all_fields as $index => $field): ?>
+                    <?php
+                    $position_x = isset($field['position_x']) ? intval($field['position_x']) : 0;
+                    $position_y = isset($field['position_y']) ? intval($field['position_y']) : 0;
+                    $default_font = isset($field['default_font']) ? $field['default_font'] : '';
+                    ?>
+                    var $preview<?php echo $index; ?> = $('<div></div>');
+                    $preview<?php echo $index; ?>.attr({
+                        'class': 'garo-preview-text',
+                        'id': 'garo_preview_<?php echo esc_js($index); ?>',
+                        'data-field-index': '<?php echo esc_js($index); ?>'
+                    });
+                    $preview<?php echo $index; ?>.css({
+                        'position': 'absolute',
+                        'left': '<?php echo esc_js($position_x); ?>px',
+                        'top': '<?php echo esc_js($position_y); ?>px',
+                        'font-family': '<?php echo esc_js($default_font); ?>',
+                        'font-size': '24px',
+                        'color': '#333',
+                        'font-weight': 'bold',
+                        'text-shadow': '0 0 2px rgba(255,255,255,0.8)',
+                        'pointer-events': 'none',
+                        'white-space': 'nowrap',
+                        'display': 'none'
+                    });
+                    $overlay.append($preview<?php echo $index; ?>);
+                <?php endforeach; ?>
+                
+                $gallery.append($overlay);
+            }
+        });
+        </script>
         <?php
     }
     

@@ -11,39 +11,6 @@ jQuery(document).ready(function($) {
         return;
     }
     
-    // Position preview overlay on product image
-    function positionPreviewOverlay() {
-        var $productImage = $('.woocommerce-product-gallery__image img').first();
-        var $previewOverlay = $('#garo-image-preview-overlay');
-        
-        if ($productImage.length && $previewOverlay.length) {
-            var imgOffset = $productImage.offset();
-            var imgWidth = $productImage.width();
-            var imgHeight = $productImage.height();
-            
-            $previewOverlay.css({
-                'position': 'absolute',
-                'left': imgOffset.left + 'px',
-                'top': imgOffset.top + 'px',
-                'width': imgWidth + 'px',
-                'height': imgHeight + 'px',
-                'pointer-events': 'none',
-                'z-index': '100'
-            });
-            
-            $previewOverlay.show();
-        }
-    }
-    
-    // Initialize preview overlay position
-    setTimeout(function() {
-        positionPreviewOverlay();
-    }, 500);
-    
-    $(window).on('resize', function() {
-        positionPreviewOverlay();
-    });
-    
     // Handle font selection changes
     $('.garo-font-dropdown').on('change', function() {
         var fieldIndex = $(this).data('field-index');
