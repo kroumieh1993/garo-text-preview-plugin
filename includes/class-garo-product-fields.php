@@ -45,19 +45,11 @@ class Garo_Product_Fields {
         wp_nonce_field('garo_product_fields_nonce', 'garo_product_fields_nonce');
         
         $enabled = get_post_meta($post->ID, '_garo_text_preview_enabled', true);
-        $selected_font = get_post_meta($post->ID, '_garo_selected_font', true);
         $custom_fields = get_post_meta($post->ID, '_garo_custom_fields', true);
         $image_upload_enabled = get_post_meta($post->ID, '_garo_image_upload_enabled', true);
         
         if (!is_array($custom_fields)) {
             $custom_fields = array();
-        }
-        
-        $fonts = get_option('garo_text_preview_fonts', array());
-        $default_font = get_option('garo_text_preview_default_font', '');
-        
-        if (empty($selected_font) && !empty($default_font)) {
-            $selected_font = $default_font;
         }
         ?>
         <div class="garo-product-fields-container">
@@ -69,23 +61,8 @@ class Garo_Product_Fields {
             </p>
             
             <div id="garo-product-customization" style="<?php echo $enabled ? '' : 'display:none;'; ?>">
-                <h3><?php echo esc_html__('Font Selection', 'garo-text-preview'); ?></h3>
-                <p>
-                    <label for="garo_selected_font"><?php echo esc_html__('Select Font for this Product:', 'garo-text-preview'); ?></label><br>
-                    <select name="garo_selected_font" id="garo_selected_font" style="width: 300px;">
-                        <option value=""><?php echo esc_html__('Select a Font', 'garo-text-preview'); ?></option>
-                        <?php
-                        if (!empty($fonts)) {
-                            foreach ($fonts as $font) {
-                                if (!empty($font['name'])) {
-                                    $selected = ($selected_font === $font['name']) ? 'selected' : '';
-                                    echo '<option value="' . esc_attr($font['name']) . '" ' . $selected . '>' . esc_html($font['name']) . '</option>';
-                                }
-                            }
-                        }
-                        ?>
-                    </select>
-                    <span class="description"><?php echo esc_html__('This font will be used for all text fields on this product', 'garo-text-preview'); ?></span>
+                <p class="description">
+                    <?php echo esc_html__('Configure text fields below. Each field will have a default font, but customers can select any available font from the frontend.', 'garo-text-preview'); ?>
                 </p>
                 
                 <h3><?php echo esc_html__('Custom Text Fields', 'garo-text-preview'); ?></h3>
@@ -151,6 +128,14 @@ class Garo_Product_Fields {
         $position_x = isset($field['position_x']) ? $field['position_x'] : '';
         $position_y = isset($field['position_y']) ? $field['position_y'] : '';
         $required = isset($field['required']) ? $field['required'] : false;
+        $default_font = isset($field['default_font']) ? $field['default_font'] : '';
+        
+        $fonts = get_option('garo_text_preview_fonts', array());
+        $default_font_global = get_option('garo_text_preview_default_font', '');
+        
+        if (empty($default_font) && !empty($default_font_global)) {
+            $default_font = $default_font_global;
+        }
         ?>
         <div class="garo-custom-field-row">
             <div class="garo-field-row">
@@ -161,6 +146,24 @@ class Garo_Product_Fields {
             <div class="garo-field-row">
                 <label><?php echo esc_html__('Placeholder Text:', 'garo-text-preview'); ?></label><br>
                 <input type="text" name="garo_custom_fields[<?php echo esc_attr($index); ?>][placeholder]" value="<?php echo esc_attr($placeholder); ?>" placeholder="<?php echo esc_attr__('e.g., Enter your name', 'garo-text-preview'); ?>">
+            </div>
+            
+            <div class="garo-field-row">
+                <label><?php echo esc_html__('Default Font:', 'garo-text-preview'); ?></label><br>
+                <select name="garo_custom_fields[<?php echo esc_attr($index); ?>][default_font]" style="width: 250px;">
+                    <option value=""><?php echo esc_html__('Use Global Default', 'garo-text-preview'); ?></option>
+                    <?php
+                    if (!empty($fonts)) {
+                        foreach ($fonts as $font) {
+                            if (!empty($font['name'])) {
+                                $selected = ($default_font === $font['name']) ? 'selected' : '';
+                                echo '<option value="' . esc_attr($font['name']) . '" ' . $selected . '>' . esc_html($font['name']) . '</option>';
+                            }
+                        }
+                    }
+                    ?>
+                </select>
+                <span class="description"><?php echo esc_html__('Default font for this field (customers can change it)', 'garo-text-preview'); ?></span>
             </div>
             
             <div class="garo-field-row">
@@ -228,10 +231,6 @@ class Garo_Product_Fields {
         // Save enabled status
         $enabled = isset($_POST['garo_text_preview_enabled']) ? '1' : '0';
         update_post_meta($post_id, '_garo_text_preview_enabled', $enabled);
-        
-        // Save selected font
-        $selected_font = isset($_POST['garo_selected_font']) ? sanitize_text_field($_POST['garo_selected_font']) : '';
-        update_post_meta($post_id, '_garo_selected_font', $selected_font);
         
         // Save custom fields
         $custom_fields = isset($_POST['garo_custom_fields']) ? array_values(array_filter($_POST['garo_custom_fields'], function($field) {

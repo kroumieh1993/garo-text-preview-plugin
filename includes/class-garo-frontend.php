@@ -69,7 +69,6 @@ class Garo_Frontend {
             return;
         }
         
-        $selected_font = get_post_meta($product_id, '_garo_selected_font', true);
         $custom_fields = get_post_meta($product_id, '_garo_custom_fields', true);
         $image_upload_enabled = get_post_meta($product_id, '_garo_image_upload_enabled', true);
         $global_fields = $this->get_applicable_global_fields($product_id);
@@ -82,17 +81,7 @@ class Garo_Frontend {
         }
         
         $fonts = get_option('garo_text_preview_fonts', array());
-        $font_family = '';
-        
-        // Find font family
-        if (!empty($selected_font)) {
-            foreach ($fonts as $font) {
-                if ($font['name'] === $selected_font) {
-                    $font_family = $font['name'];
-                    break;
-                }
-            }
-        }
+        $default_font_global = get_option('garo_text_preview_default_font', '');
         ?>
         <div class="garo-customization-container">
             <h3><?php echo esc_html__('Customize Your Product', 'garo-text-preview'); ?></h3>
@@ -108,6 +97,7 @@ class Garo_Frontend {
                     $required = isset($field['required']) ? $field['required'] : false;
                     $field_type = isset($field['type']) ? $field['type'] : 'text';
                     $is_global = isset($field['is_global']) ? $field['is_global'] : false;
+                    $default_font = isset($field['default_font']) ? $field['default_font'] : $default_font_global;
                     ?>
                     <div class="garo-field-group">
                         <label for="garo_field_<?php echo esc_attr($index); ?>">
@@ -130,8 +120,7 @@ class Garo_Frontend {
                                 data-max="<?php echo esc_attr($max_chars); ?>"
                                 data-required="<?php echo $required ? '1' : '0'; ?>"
                                 data-price="<?php echo esc_attr($additional_price); ?>"
-                                data-font="<?php echo esc_attr($font_family); ?>"
-                                style="<?php echo !empty($font_family) ? 'font-family: ' . esc_attr($font_family) . ';' : ''; ?>"
+                                data-field-index="<?php echo esc_attr($index); ?>"
                                 rows="4"
                             ></textarea>
                         <?php else: ?>
@@ -145,10 +134,31 @@ class Garo_Frontend {
                                 data-max="<?php echo esc_attr($max_chars); ?>"
                                 data-required="<?php echo $required ? '1' : '0'; ?>"
                                 data-price="<?php echo esc_attr($additional_price); ?>"
-                                data-font="<?php echo esc_attr($font_family); ?>"
-                                style="<?php echo !empty($font_family) ? 'font-family: ' . esc_attr($font_family) . ';' : ''; ?>"
+                                data-field-index="<?php echo esc_attr($index); ?>"
                             >
                         <?php endif; ?>
+                        
+                        <!-- Font selector for this field -->
+                        <div class="garo-font-selector">
+                            <label for="garo_font_<?php echo esc_attr($index); ?>"><?php echo esc_html__('Select Font:', 'garo-text-preview'); ?></label>
+                            <select 
+                                name="garo_custom_font[<?php echo esc_attr($index); ?>]" 
+                                id="garo_font_<?php echo esc_attr($index); ?>" 
+                                class="garo-font-dropdown"
+                                data-field-index="<?php echo esc_attr($index); ?>"
+                            >
+                                <?php
+                                if (!empty($fonts)) {
+                                    foreach ($fonts as $font) {
+                                        if (!empty($font['name'])) {
+                                            $selected = ($default_font === $font['name']) ? 'selected' : '';
+                                            echo '<option value="' . esc_attr($font['name']) . '" ' . $selected . '>' . esc_html($font['name']) . '</option>';
+                                        }
+                                    }
+                                }
+                                ?>
+                            </select>
+                        </div>
                         
                         <?php if ($min_chars > 0 || $max_chars > 0): ?>
                             <small class="garo-field-hint">
@@ -168,7 +178,6 @@ class Garo_Frontend {
                         <input type="hidden" name="garo_field_data[<?php echo esc_attr($index); ?>][price]" value="<?php echo esc_attr($additional_price); ?>">
                         <input type="hidden" name="garo_field_data[<?php echo esc_attr($index); ?>][position_x]" value="<?php echo esc_attr(isset($field['position_x']) ? $field['position_x'] : ''); ?>">
                         <input type="hidden" name="garo_field_data[<?php echo esc_attr($index); ?>][position_y]" value="<?php echo esc_attr(isset($field['position_y']) ? $field['position_y'] : ''); ?>">
-                        <input type="hidden" name="garo_field_data[<?php echo esc_attr($index); ?>][font]" value="<?php echo esc_attr($font_family); ?>">
                     </div>
                 <?php endforeach; ?>
             <?php endif; ?>
@@ -275,6 +284,7 @@ class Garo_Frontend {
         if (isset($_POST['garo_custom_text'])) {
             $custom_text = $_POST['garo_custom_text'];
             $field_data = isset($_POST['garo_field_data']) ? $_POST['garo_field_data'] : array();
+            $custom_fonts = isset($_POST['garo_custom_font']) ? $_POST['garo_custom_font'] : array();
             
             $customizations = array();
             $total_additional_price = 0;
@@ -290,7 +300,7 @@ class Garo_Frontend {
                         'price' => $price,
                         'position_x' => isset($field_data[$index]['position_x']) ? $field_data[$index]['position_x'] : '',
                         'position_y' => isset($field_data[$index]['position_y']) ? $field_data[$index]['position_y'] : '',
-                        'font' => isset($field_data[$index]['font']) ? $field_data[$index]['font'] : '',
+                        'font' => isset($custom_fonts[$index]) ? sanitize_text_field($custom_fonts[$index]) : '',
                     );
                 }
             }

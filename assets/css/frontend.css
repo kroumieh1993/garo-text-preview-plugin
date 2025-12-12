@@ -16,7 +16,13 @@
 }
 
 .garo-field-group {
-    margin-bottom: 20px;
+    margin-bottom: 25px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.garo-field-group:last-of-type {
+    border-bottom: none;
 }
 
 .garo-field-group label {
@@ -46,6 +52,7 @@
     border-radius: 4px;
     font-size: 16px;
     box-sizing: border-box;
+    margin-bottom: 10px;
 }
 
 .garo-custom-field:focus {
@@ -56,6 +63,34 @@
 
 .garo-custom-field.error {
     border-color: #dc3232;
+}
+
+.garo-font-selector {
+    margin-top: 8px;
+    margin-bottom: 8px;
+}
+
+.garo-font-selector label {
+    display: inline-block;
+    font-weight: normal;
+    font-size: 14px;
+    margin-right: 10px;
+    margin-bottom: 0;
+}
+
+.garo-font-dropdown {
+    padding: 6px 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    min-width: 200px;
+    background-color: #fff;
+}
+
+.garo-font-dropdown:focus {
+    outline: none;
+    border-color: #0073aa;
+    box-shadow: 0 0 3px rgba(0, 115, 170, 0.3);
 }
 
 .garo-field-hint {
@@ -113,6 +148,16 @@
     
     .garo-custom-field {
         max-width: 100%;
+    }
+    
+    .garo-font-dropdown {
+        width: 100%;
+        max-width: 100%;
+    }
+    
+    .garo-font-selector label {
+        display: block;
+        margin-bottom: 5px;
     }
 }
 

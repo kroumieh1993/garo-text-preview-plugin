@@ -42,8 +42,12 @@ class Garo_Cart {
                 $label = $customization['label'];
                 $text = $customization['text'];
                 $price = isset($customization['price']) ? floatval($customization['price']) : 0;
+                $font = isset($customization['font']) ? $customization['font'] : '';
                 
                 $display_value = $text;
+                if (!empty($font)) {
+                    $display_value .= ' <span style="font-size: 12px; color: #666;">(Font: ' . esc_html($font) . ')</span>';
+                }
                 if ($price > 0) {
                     $display_value .= ' (+' . wc_price($price) . ')';
                 }
@@ -101,6 +105,9 @@ class Garo_Cart {
                 $font = isset($customization['font']) ? $customization['font'] : '';
                 
                 $display_value = $text;
+                if (!empty($font)) {
+                    $display_value .= ' (Font: ' . esc_html($font) . ')';
+                }
                 if ($price > 0) {
                     $display_value .= ' (+' . wc_price($price) . ')';
                 }

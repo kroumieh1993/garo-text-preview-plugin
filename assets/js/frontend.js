@@ -11,6 +11,31 @@ jQuery(document).ready(function($) {
         return;
     }
     
+    // Handle font selection changes
+    $('.garo-font-dropdown').on('change', function() {
+        var fieldIndex = $(this).data('field-index');
+        var selectedFont = $(this).val();
+        var $textField = $('#garo_field_' + fieldIndex);
+        
+        // Apply font to the text field
+        if (selectedFont) {
+            $textField.css('font-family', selectedFont);
+        }
+        
+        updatePreview();
+    });
+    
+    // Initialize fonts on page load
+    $('.garo-font-dropdown').each(function() {
+        var fieldIndex = $(this).data('field-index');
+        var selectedFont = $(this).val();
+        var $textField = $('#garo_field_' + fieldIndex);
+        
+        if (selectedFont) {
+            $textField.css('font-family', selectedFont);
+        }
+    });
+    
     // Real-time character count validation
     $('.garo-custom-field').on('input', function() {
         validateField($(this));
@@ -67,7 +92,9 @@ jQuery(document).ready(function($) {
         $('.garo-custom-field').each(function() {
             var $field = $(this);
             var value = $field.val();
-            var font = $field.data('font');
+            var fieldIndex = $field.data('field-index');
+            var $fontDropdown = $('#garo_font_' + fieldIndex);
+            var font = $fontDropdown.val();
             
             if (value) {
                 hasContent = true;
